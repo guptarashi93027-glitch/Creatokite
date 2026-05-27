@@ -21,21 +21,45 @@ async function method1_scrapeCreators(shortcode) {
 
   try {
     const res = await axios.get('https://api.scrapecreators.com/v1/instagram/post', {
-      params:  { url: `https://www.instagram.com/reel/${shortcode}/` },
+      params:  { url:  `https://www.instagram.com/reel/${shortcode}/` },
       headers: { 'x-api-key': key },
       timeout: 15000,
     });
 
     const d = res.data?.data || res.data;
+    console.log(
+    '[SCRAPECREATORS RAW]',
+    JSON.stringify(d, null, 2)
+  );
     if (!d) return null;
 
     // ScrapeCreators returns different shapes — handle both
-    const node = d.xdt_api__v1__media__shortcode__web_info?.items?.[0] ||
-                 d.items?.[0] || d;
+    const node =
+  d.xdt_shortcode_media ||
+  d.xdt_api__v1__media__shortcode__web_info?.items?.[0] ||
+  d.items?.[0] ||
+  d;
 
-    const views    = parseInt(node.play_count    || node.view_count    || node.video_view_count || 0);
-    const likes    = parseInt(node.like_count    || node.edge_media_preview_like?.count || 0);
-    const comments = parseInt(node.comment_count || node.edge_media_to_comment?.count  || 0);
+const views = parseInt(
+  node.video_view_count ||
+  node.video_play_count ||
+  node.play_count ||
+  node.view_count ||
+  0
+);
+
+const likes = parseInt(
+  node.like_count ||
+  node.edge_media_preview_like?.count ||
+  0
+);
+
+const comments = parseInt(
+  node.comment_count ||
+  node.edge_media_to_parent_comment?.count ||
+  node.edge_media_preview_comment?.count ||
+  0
+);
 
     if (!views && !likes) return null;
 
@@ -87,15 +111,47 @@ async function method2_rapidapi(shortcode) {
   ];
 
   for (const attempt of attempts) {
-    try {
-      const r = await attempt();
-      const d = r.data?.data || r.data?.items?.[0] || r.data;
-      if (!d) continue;
+  try {
+    const r = await attempt();
 
-      const views    = parseInt(d.play_count || d.video_view_count || d.view_count || 0);
-      const likes    = parseInt(d.like_count || 0);
-      const comments = parseInt(d.comment_count || 0);
-      if (!views && !likes) continue;
+    const raw = r.data;
+
+    console.log(
+      '[RAPIDAPI RAW]',
+      JSON.stringify(raw, null, 2)
+    );
+
+    const d =
+      raw?.data?.items?.[0] ||
+      raw?.items?.[0] ||
+      raw?.data ||
+      raw;
+
+    if (!d) continue;
+
+    const views = parseInt(
+      d.play_count ||
+      d.video_view_count ||
+      d.view_count ||
+      d.media_statistics?.play_count ||
+      0
+    );
+
+    const likes = parseInt(
+      d.like_count ||
+      d.media_statistics?.like_count ||
+      d.edge_media_preview_like?.count ||
+      0
+    );
+
+    const comments = parseInt(
+      d.comment_count ||
+      d.media_statistics?.comment_count ||
+      d.edge_media_to_comment?.count ||
+      0
+    );
+
+    if (!views && !likes) continue;
 
       console.log(`[ReelScraper M2] ✅ RapidAPI — views:${views} likes:${likes}`);
       return {
@@ -139,9 +195,14 @@ async function scrapeReel(urlOrShortcode) {
   if (!shortcode) throw new Error('Invalid Instagram Reel URL or shortcode');
 
   const data =
-    await method1_scrapeCreators(shortcode) ||
-    await method2_rapidapi(shortcode)       ||
-    method3_estimate(shortcode);
+  await method1_scrapeCreators(shortcode) ||
+  await method2_rapidapi(shortcode);
+
+if (!data) {
+  throw new Error(
+    'Unable to fetch reel metrics. Instagram source failed.'
+  );
+}
 
   // Compute engagement %
   const engagement = data.views > 0
