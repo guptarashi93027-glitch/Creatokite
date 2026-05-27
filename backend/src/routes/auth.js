@@ -5,6 +5,8 @@ const { User, Notification }     = require('../models');
 const { auth, setAuthCookies, clearAuthCookies } = require('../middleware/auth');
 const { computeScore, getRank, computeCAS }       = require('../services/scoring');
 const { fetchSocialData }                          = require('../services/socialFetcher');
+const sendLoginMail = require("../utils/sendEmail");
+
 
 const router    = express.Router();
 const mkToken   = id => jwt.sign({ id }, process.env.JWT_SECRET,         { expiresIn: process.env.JWT_EXPIRES_IN        || '7d'  });
@@ -129,6 +131,7 @@ router.post('/login', [
     const token=mkToken(user._id), refresh=mkRefresh(user._id);
     user.refreshToken=refresh;
     await user.save({ validateBeforeSave:false });
+    await sendLoginMail(user.email);
 
     return sendAuth(res, 200, user, token, refresh);
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
