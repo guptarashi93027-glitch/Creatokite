@@ -175,23 +175,24 @@ router.get('/me', auth, (req, res) => {
 
 router.get(
   "/google",
-
   passport.authenticate("google", {
     scope: ["profile", "email"],
+    session: false,
+    prompt: "select_account",
   })
 );
+
 /* ── GOOGLE CALLBACK ───────────────────────── */
 
 router.get(
-
   "/google/callback",
 
   passport.authenticate("google", {
+    failureRedirect: "/login",
     session: false,
   }),
 
   async (req, res) => {
-
     try {
 
       const token = mkToken(req.user._id);
@@ -204,15 +205,15 @@ router.get(
         validateBeforeSave: false,
       });
 
-      res.redirect(
-
+      return res.redirect(
         `https://creatokitee.netlify.app/login-success?token=${token}`
-
       );
 
     } catch (error) {
 
-      res.status(500).json({
+      console.error(error);
+
+      return res.status(500).json({
         success: false,
         message: error.message,
       });
