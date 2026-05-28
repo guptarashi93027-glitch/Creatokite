@@ -115,3 +115,4 @@ Open: http://localhost:5173
 - `frontend/src/pages/creator/Profile.jsx` — Added social URL analysis UI
 - `frontend/src/pages/creator/Analytics.jsx` — Added CAS radar chart
 - `frontend/src/pages/admin/AdminDashboard.jsx` — Added pending creators alert
+
