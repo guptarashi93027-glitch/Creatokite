@@ -1,4 +1,4 @@
-
+import LoginSuccess from './pages/LoginSuccess';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { ProtectedRoute, GuestRoute } from './router/ProtectedRoute';
@@ -46,6 +46,7 @@ export default function App() {
       <Route path="/"         element={<RootRedirect />} />
       <Route path="/login"    element={<GuestRoute><Login /></GuestRoute>} />
       <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+      <Route path="/login-success" element={<LoginSuccess />} />
 
       {/* Creator */}
       <Route element={<ProtectedRoute roles={['creator']}><AppLayout /></ProtectedRoute>}>
@@ -83,5 +84,6 @@ export default function App() {
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+  
   );
 }

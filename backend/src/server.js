@@ -16,6 +16,8 @@ const cors         = require('cors');
 const compression  = require('compression');
 const morgan       = require('morgan');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
+require('./config/passport');
 const connectDB    = require('./config/db');
 const {
   helmetConfig, globalLimiter, authLimiter,
@@ -23,6 +25,7 @@ const {
 } = require('./middleware/security');
 
 const app    = express();
+app.use(passport.initialize());
 const server = http.createServer(app);
 const CLIENT = process.env.CLIENT_URL;
 

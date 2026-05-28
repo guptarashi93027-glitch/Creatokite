@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt     = require('jsonwebtoken');
+const passport = require("passport");
 const { body, validationResult } = require('express-validator');
 const { User, Notification }     = require('../models');
 const { auth, setAuthCookies, clearAuthCookies } = require('../middleware/auth');
@@ -170,5 +171,52 @@ router.post('/logout', auth, async (req, res) => {
 router.get('/me', auth, (req, res) => {
   res.json({ success:true, user:req.user.toPublicJSON ? req.user.toPublicJSON() : req.user });
 });
+/* ── GOOGLE LOGIN ───────────────────────────── */
 
+router.get(
+  "/google",
+
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
+);
+/* ── GOOGLE CALLBACK ───────────────────────── */
+
+router.get(
+
+  "/google/callback",
+
+  passport.authenticate("google", {
+    session: false,
+  }),
+
+  async (req, res) => {
+
+    try {
+
+      const token = mkToken(req.user._id);
+
+      const refresh = mkRefresh(req.user._id);
+
+      req.user.refreshToken = refresh;
+
+      await req.user.save({
+        validateBeforeSave: false,
+      });
+
+      res.redirect(
+
+        `https://creatokitee.netlify.app/login-success?token=${token}`
+
+      );
+
+    } catch (error) {
+
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+);
 module.exports = router;

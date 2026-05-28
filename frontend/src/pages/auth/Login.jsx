@@ -96,7 +96,31 @@ export default function Login() {
             <Btn variant="primary" className="w-full btn-lg" type="submit" disabled={loading}>
               {loading ? 'Signing in…' : 'Sign In →'}
             </Btn>
-          </form>
+            </form>
+          
+          <button
+  onClick={() => {
+  const API = import.meta.env.VITE_API_URL;
+
+  window.location.href =
+    `${API}/auth/google`;
+}}
+  style={{
+    width: '100%',
+    marginTop: 14,
+    padding: '12px',
+    borderRadius: 'var(--r)',
+    border: '1px solid var(--border)',
+    background: 'white',
+    color: '#111',
+    fontWeight: 600,
+    cursor: 'pointer',
+  }}
+>
+
+  Continue with Google
+
+</button>
 
           <div style={{ margin: '20px 0', borderTop: '1px solid var(--border)', paddingTop: 16 }}>
             <p style={{ fontSize: 12, color: 'var(--t2)', textAlign: 'center', marginBottom: 10 }}>
