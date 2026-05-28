@@ -1,48 +1,78 @@
-new GoogleStrategy(
-  {
-    clientID: process.env.GOOGLE_CLIENT_ID,
+const passport = require("passport");
 
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+const GoogleStrategy =
+  require("passport-google-oauth20").Strategy;
 
-    callbackURL:
-      "https://creatokite-backend-nw8l.onrender.com/api/auth/google/callback",
+const { User } = require("../models");
 
-    proxy: true,
+passport.use(
 
-    state: false
-  },
+  new GoogleStrategy(
 
-  async (accessToken, refreshToken, profile, done) => {
+    {
+      clientID:
+        process.env.GOOGLE_CLIENT_ID,
 
-    try {
+      clientSecret:
+        process.env.GOOGLE_CLIENT_SECRET,
 
-      const email = profile.emails[0].value;
+      callbackURL:
+        "https://creatokite-backend-nw8l.onrender.com/api/auth/google/callback",
 
-      let user = await User.findOne({ email });
+      proxy: true,
 
-      if (!user) {
+      state: false,
+    },
 
-        user = await User.create({
+    async (
+      accessToken,
+      refreshToken,
+      profile,
+      done
+    ) => {
 
-          displayName: profile.displayName,
+      try {
 
-          email,
+        const email =
+          profile.emails[0].value;
 
-          password: "googleauth123",
+        let user =
+          await User.findOne({ email });
 
-          role: "creator",
+        if (!user) {
 
-          provider: "google",
+          user =
+            await User.create({
 
-          profilePic: profile.photos[0].value,
-        });
+              displayName:
+                profile.displayName,
+
+              email,
+
+              password:
+                "googleauth123",
+
+              role:
+                "creator",
+
+              provider:
+                "google",
+
+              profilePic:
+                profile.photos[0].value,
+            });
+        }
+
+        return done(null, user);
+
+      } catch (error) {
+
+        console.error(error);
+
+        return done(error, null);
       }
-
-      return done(null, user);
-
-    } catch (error) {
-
-      return done(error, null);
     }
-  }
+  )
 );
+
+module.exports = passport;
