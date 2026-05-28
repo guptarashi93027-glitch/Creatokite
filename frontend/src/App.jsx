@@ -65,6 +65,7 @@ export default function App() {
         <Route path="/brand/campaigns/:id"     element={<CampaignDetail />} />
         <Route path="/brand/analytics"         element={<BrandAnalytics />} />
         <Route path="/brand/reels"             element={<ReelTracker />} />
+        <Route path="/brand/creator-analysis" element={<CreatorAnalysis />} />
       </Route>
 
       {/* Admin */}
