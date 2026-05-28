@@ -1,78 +1,64 @@
-const passport = require("passport");
+async (
+  accessToken,
+  refreshToken,
+  profile,
+  done
+) => {
 
-const GoogleStrategy =
-  require("passport-google-oauth20").Strategy;
+  try {
 
-const { User } = require("../models");
+    console.log("✅ GOOGLE PROFILE RECEIVED");
 
-passport.use(
+    console.log(profile);
 
-  new GoogleStrategy(
+    const email =
+      profile.emails[0].value;
 
-    {
-      clientID:
-        process.env.GOOGLE_CLIENT_ID,
+    console.log("EMAIL:", email);
 
-      clientSecret:
-        process.env.GOOGLE_CLIENT_SECRET,
+    let user =
+      await User.findOne({ email });
 
-      callbackURL:
-        "https://creatokite-backend-nw8l.onrender.com/api/auth/google/callback",
+    console.log("FOUND USER:", user);
 
-      proxy: true,
+    if (!user) {
 
-      state: false,
-    },
+      console.log("CREATING NEW USER");
 
-    async (
-      accessToken,
-      refreshToken,
-      profile,
-      done
-    ) => {
+      user =
+        await User.create({
 
-      try {
+          displayName:
+            profile.displayName,
 
-        const email =
-          profile.emails[0].value;
+          email,
 
-        let user =
-          await User.findOne({ email });
+          password:
+            "googleauth123",
 
-        if (!user) {
+          role:
+            "creator",
 
-          user =
-            await User.create({
+          provider:
+            "google",
 
-              displayName:
-                profile.displayName,
+          profilePic:
+            profile.photos[0].value,
+        });
 
-              email,
-
-              password:
-                "googleauth123",
-
-              role:
-                "creator",
-
-              provider:
-                "google",
-
-              profilePic:
-                profile.photos[0].value,
-            });
-        }
-
-        return done(null, user);
-
-      } catch (error) {
-
-        console.error(error);
-
-        return done(error, null);
-      }
+      console.log("USER CREATED");
     }
-  )
-);
 
-module.exports = passport;
+    console.log("DONE SUCCESS");
+
+    return done(null, user);
+
+  } catch (error) {
+
+    console.log("❌ GOOGLE ERROR");
+
+    console.log(error);
+
+    return done(error, null);
+  }
+}
