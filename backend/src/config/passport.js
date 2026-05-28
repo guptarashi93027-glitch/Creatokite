@@ -47,7 +47,7 @@ passport.use(
 
               email,
 
-              password: "",
+              password: "googleauth123",
 
               role: "creator",
 
