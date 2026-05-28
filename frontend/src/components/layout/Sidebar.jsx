@@ -31,6 +31,8 @@ const ADMIN_NAV = [
   { to: '/admin/analytics',         icon: TrendingUp,      label: 'Analytics'         },
   { to: '/admin/creator-approval',  icon: UserCheck,       label: 'Creator Approvals' },
   { to: '/admin/reels',             icon: Play,            label: 'Reel Analytics',   badge: 'NEW' },
+  { to: '/admin/creator-analysis', icon: Activity, label: 'Creator Analysis' },
+  
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
