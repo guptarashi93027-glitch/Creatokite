@@ -14,6 +14,7 @@ const CREATOR_NAV = [
   { to: '/creator/earnings',    icon: Wallet,          label: 'Earnings'     },
   { to: '/creator/leaderboard', icon: Trophy,          label: 'Leaderboard'  },
   { to: '/creator/profile',     icon: Settings,        label: 'Profile'      },
+  { to: '/creator/reels', icon: Play, label: 'Reel Tracker', badge: 'NEW' },
 ];
 
 const BRAND_NAV = [
