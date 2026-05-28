@@ -10,7 +10,6 @@ import {
 const CREATOR_NAV = [
   { to: '/creator/dashboard',   icon: LayoutDashboard, label: 'Dashboard'    },
   { to: '/creator/assigned',    icon: Target,          label: 'My Campaigns' },
-  { to: '/creator/reels',       icon: Play,            label: 'Reel Tracker', badge: 'NEW' },
   { to: '/creator/analytics',   icon: BarChart2,       label: 'Analytics'    },
   { to: '/creator/earnings',    icon: Wallet,          label: 'Earnings'     },
   { to: '/creator/leaderboard', icon: Trophy,          label: 'Leaderboard'  },
@@ -31,7 +30,6 @@ const ADMIN_NAV = [
   { to: '/admin/users',             icon: Users,           label: 'Users'             },
   { to: '/admin/analytics',         icon: TrendingUp,      label: 'Analytics'         },
   { to: '/admin/creator-approval',  icon: UserCheck,       label: 'Creator Approvals' },
-  { to: '/admin/creator-analysis',  icon: Activity,        label: 'Creator Analysis'  },
   { to: '/admin/reels',             icon: Play,            label: 'Reel Analytics',   badge: 'NEW' },
 ];
 
