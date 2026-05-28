@@ -23,6 +23,7 @@ import BrandCampaigns    from './pages/brand/BrandCampaigns';
 import BrandAnalytics    from './pages/brand/BrandAnalytics';
 import CampaignDetail    from './pages/brand/CampaignDetail';
 import CreatorAnalysis   from './pages/brand/CreatorAnalysis';
+import ReelTracker       from './pages/brand/ReelTracker';
 
 import AdminDashboard       from './pages/admin/AdminDashboard';
 import AdminCampaigns       from './pages/admin/AdminCampaigns';
