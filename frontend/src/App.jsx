@@ -23,7 +23,6 @@ import BrandCampaigns    from './pages/brand/BrandCampaigns';
 import BrandAnalytics    from './pages/brand/BrandAnalytics';
 import CampaignDetail    from './pages/brand/CampaignDetail';
 import CreatorAnalysis   from './pages/brand/CreatorAnalysis';
-import ReelTracker       from './pages/brand/ReelTracker';
 
 import AdminDashboard       from './pages/admin/AdminDashboard';
 import AdminCampaigns       from './pages/admin/AdminCampaigns';
@@ -56,7 +55,6 @@ export default function App() {
         <Route path="/creator/earnings"    element={<CreatorEarnings />} />
         <Route path="/creator/leaderboard" element={<Leaderboard />} />
         <Route path="/creator/profile"     element={<CreatorProfile />} />
-        <Route path="/creator/reels"       element={<ReelTracker />} />
       </Route>
 
       {/* Brand */}
@@ -77,7 +75,6 @@ export default function App() {
         <Route path="/admin/users"             element={<AdminUsers />} />
         <Route path="/admin/analytics"         element={<AdminAnalytics />} />
         <Route path="/admin/creator-approval"  element={<AdminCreatorApproval />} />
-        <Route path="/admin/creator-analysis"  element={<CreatorAnalysis />} />
         <Route path="/admin/reels"             element={<AdminReelAnalytics />} />
       </Route>
 
