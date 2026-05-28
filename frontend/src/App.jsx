@@ -77,6 +77,7 @@ export default function App() {
         <Route path="/admin/analytics"         element={<AdminAnalytics />} />
         <Route path="/admin/creator-approval"  element={<AdminCreatorApproval />} />
         <Route path="/admin/reels"             element={<AdminReelAnalytics />} />
+        <Route path="/admin/creator-analysis" element={<CreatorAnalysis />} />
       </Route>
 
       {/* Fallback */}
