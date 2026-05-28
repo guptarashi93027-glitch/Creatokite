@@ -18,8 +18,7 @@ passport.use(
         process.env.GOOGLE_CLIENT_SECRET,
 
       callbackURL:
-        "https://creatokite-backend-nw8l.onrender.com/api/auth/google/callback",
-
+      "https://creatokite-backend-nw8l.onrender.com/api/auth/google/callback"
     },
 
     async (
