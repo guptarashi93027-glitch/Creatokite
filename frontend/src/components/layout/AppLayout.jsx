@@ -8,10 +8,8 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  // Close sidebar on route change (mobile)
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [location.pathname]);
+  // Close sidebar on route change
+  useEffect(() => { setSidebarOpen(false); }, [location.pathname]);
 
   // Close sidebar on ESC key
   useEffect(() => {
@@ -20,13 +18,10 @@ export default function AppLayout() {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
-  // Prevent body scroll when sidebar open on mobile
+  // Lock body scroll when sidebar open on mobile
   useEffect(() => {
-    if (sidebarOpen && window.innerWidth < 768) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow =
+      sidebarOpen && window.innerWidth < 768 ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [sidebarOpen]);
 
@@ -35,15 +30,6 @@ export default function AppLayout() {
 
   return (
     <div className="app-layout">
-      {/* Sidebar overlay — mobile only */}
-      {sidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={closeSidebar}
-          aria-hidden="true"
-        />
-      )}
-
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
 
       <div className="main-area">
@@ -53,7 +39,6 @@ export default function AppLayout() {
         </main>
       </div>
 
-      {/* Bottom nav — mobile only */}
       <BottomNav />
     </div>
   );
