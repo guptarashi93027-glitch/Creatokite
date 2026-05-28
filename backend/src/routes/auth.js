@@ -1,12 +1,13 @@
+
 const express = require('express');
 const jwt     = require('jsonwebtoken');
-const passport = require("passport");
 const { body, validationResult } = require('express-validator');
 const { User, Notification }     = require('../models');
 const { auth, setAuthCookies, clearAuthCookies } = require('../middleware/auth');
 const { computeScore, getRank, computeCAS }       = require('../services/scoring');
 const { fetchSocialData }                          = require('../services/socialFetcher');
-const sendLoginMail = require("../utils/sendEmail");
+/*const sendLoginMail = require("../utils/sendEmail");*/
+const { sendLoginMail, sendVerificationMail } = require("../utils/sendEmail");
 
 
 const router    = express.Router();
@@ -63,6 +64,11 @@ router.post('/register', [
     const token=mkToken(user._id), refresh=mkRefresh(user._id);
     user.refreshToken=refresh;
     await user.save();
+    const crypto = require('crypto');
+    const verifyToken = crypto.randomBytes(32).toString('hex');
+    user.emailVerifyToken = verifyToken;
+    await user.save({ validateBeforeSave: false });
+    await sendVerificationMail(email, verifyToken);
 
     let socialResult = null;
     if (role==='creator' && (instagramUrl || youtubeUrl)) {
@@ -119,6 +125,8 @@ router.post('/login', [
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password)))
       return res.status(401).json({ success:false, message:'Invalid email or password.' });
+    if (!user.emailVerified)
+    return res.status(403).json({ success: false, message: 'Please verify your email first.' });
     if (user.isBanned)
       return res.status(403).json({ success:false, message:`Account suspended: ${user.banReason}` });
 
@@ -171,53 +179,18 @@ router.post('/logout', auth, async (req, res) => {
 router.get('/me', auth, (req, res) => {
   res.json({ success:true, user:req.user.toPublicJSON ? req.user.toPublicJSON() : req.user });
 });
-/* ── GOOGLE LOGIN ───────────────────────────── */
 
-router.get(
-  "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-    session: false,
-    prompt: "select_account",
-  })
-);
-
-/* ── GOOGLE CALLBACK ───────────────────────── */
-
-router.get(
-  "/google/callback",
-
-  passport.authenticate("google", {
-    failureRedirect: "/login",
-    session: false,
-  }),
-
-  async (req, res) => {
+router.get('/verify-email', async (req, res) => {
     try {
+        const { token } = req.query;
+        const user = await User.findOne({ emailVerifyToken: token });
+        if (!user) return res.status(400).json({ success: false, message: 'Invalid or expired token.' });
 
-      const token = mkToken(req.user._id);
+        user.emailVerified = true;
+        user.emailVerifyToken = '';
+        await user.save({ validateBeforeSave: false });
 
-      const refresh = mkRefresh(req.user._id);
-
-      req.user.refreshToken = refresh;
-
-      await req.user.save({
-        validateBeforeSave: false,
-      });
-
-      return res.redirect(
-        `https://creatokitee.netlify.app/login-success?token=${token}`
-      );
-
-    } catch (error) {
-
-      console.error(error);
-
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-);
+        res.json({ success: true, message: 'Email verified! You can now login.' });
+    } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
 module.exports = router;
