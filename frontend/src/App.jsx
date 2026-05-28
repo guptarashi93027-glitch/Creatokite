@@ -55,6 +55,7 @@ export default function App() {
         <Route path="/creator/earnings"    element={<CreatorEarnings />} />
         <Route path="/creator/leaderboard" element={<Leaderboard />} />
         <Route path="/creator/profile"     element={<CreatorProfile />} />
+        <Route path="/creator/reels" element={<ReelTracker />} />
       </Route>
 
       {/* Brand */}
