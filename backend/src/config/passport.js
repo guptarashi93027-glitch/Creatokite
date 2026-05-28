@@ -1,69 +1,48 @@
-const passport = require("passport");
+new GoogleStrategy(
+  {
+    clientID: process.env.GOOGLE_CLIENT_ID,
 
-const GoogleStrategy =
-require("passport-google-oauth20").Strategy;
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
-const { User } = require("../models");
+    callbackURL:
+      "https://creatokite-backend-nw8l.onrender.com/api/auth/google/callback",
 
-passport.use(
+    proxy: true,
 
-  new GoogleStrategy(
+    state: false
+  },
 
-    {
+  async (accessToken, refreshToken, profile, done) => {
 
-      clientID:
-        process.env.GOOGLE_CLIENT_ID,
+    try {
 
-      clientSecret:
-        process.env.GOOGLE_CLIENT_SECRET,
+      const email = profile.emails[0].value;
 
-      callbackURL:
-      "https://creatokite-backend-nw8l.onrender.com/api/auth/google/callback"
-    },
+      let user = await User.findOne({ email });
 
-    async (
-      accessToken,
-      refreshToken,
-      profile,
-      done
-    ) => {
+      if (!user) {
 
-      try {
+        user = await User.create({
 
-        const email =
-          profile.emails[0].value;
+          displayName: profile.displayName,
 
-        let user =
-          await User.findOne({ email });
+          email,
 
-        if (!user) {
+          password: "googleauth123",
 
-          user =
-            await User.create({
+          role: "creator",
 
-              displayName:
-                profile.displayName,
+          provider: "google",
 
-              email,
-
-              password: "googleauth123",
-
-              role: "creator",
-
-              provider: "google",
-
-              profilePic:
-                profile.photos[0].value,
-
-            });
-        }
-
-        return done(null, user);
-
-      } catch (error) {
-
-        return done(error, null);
+          profilePic: profile.photos[0].value,
+        });
       }
+
+      return done(null, user);
+
+    } catch (error) {
+
+      return done(error, null);
     }
-  )
+  }
 );
