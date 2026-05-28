@@ -5,6 +5,7 @@ import {
   Trophy, Megaphone, PlusCircle, Users, TrendingUp,
 } from 'lucide-react';
 
+/* Creator — no Reel Tracker */
 const CREATOR_NAV = [
   { to: '/creator/dashboard',   icon: LayoutDashboard, label: 'Home'      },
   { to: '/creator/assigned',    icon: Target,          label: 'Campaigns' },
@@ -13,18 +14,19 @@ const CREATOR_NAV = [
   { to: '/creator/leaderboard', icon: Trophy,          label: 'Ranks'     },
 ];
 
+/* Brand — no Creator Analysis */
 const BRAND_NAV = [
-  { to: '/brand/dashboard',         icon: LayoutDashboard, label: 'Home'    },
-  { to: '/brand/campaigns',         icon: Megaphone,       label: 'Campaigns'},
-  { to: '/brand/campaigns/create',  icon: PlusCircle,      label: 'Create'  },
-  { to: '/brand/analytics',         icon: BarChart2,       label: 'Analytics'},
+  { to: '/brand/dashboard',        icon: LayoutDashboard, label: 'Home'      },
+  { to: '/brand/campaigns',        icon: Megaphone,       label: 'Campaigns' },
+  { to: '/brand/campaigns/create', icon: PlusCircle,      label: 'Create'    },
+  { to: '/brand/analytics',        icon: BarChart2,       label: 'Analytics' },
 ];
 
 const ADMIN_NAV = [
-  { to: '/admin/dashboard',        icon: LayoutDashboard, label: 'Home'     },
-  { to: '/admin/campaigns',        icon: Megaphone,       label: 'Campaigns'},
-  { to: '/admin/users',            icon: Users,           label: 'Users'    },
-  { to: '/admin/analytics',        icon: TrendingUp,      label: 'Analytics'},
+  { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Home'      },
+  { to: '/admin/campaigns', icon: Megaphone,       label: 'Campaigns' },
+  { to: '/admin/users',     icon: Users,           label: 'Users'     },
+  { to: '/admin/analytics', icon: TrendingUp,      label: 'Analytics' },
 ];
 
 export default function BottomNav() {
